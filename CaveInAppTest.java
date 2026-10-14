@@ -193,7 +193,7 @@ public class CaveInAppTest extends student.TestCase
     /** Players are created in the order entered, with a full cup. */
     public void testSetUpGame()
     {
-        Game game = appWithInput("2\nAna\nBen\n").setUpGame();
+        Game game = appWithInput("2\n0\nAna\nBen\n").setUpGame();
         assertEquals(2, game.getPlayers().length);
         assertEquals("Ana", game.getPlayers()[0].getName());
         assertEquals("Ben", game.getPlayers()[1].getName());
@@ -204,7 +204,7 @@ public class CaveInAppTest extends student.TestCase
     /** Bad count and blank name are re-prompted during setup. */
     public void testSetUpGameRepromptsBadInput()
     {
-        CaveInApp app = appWithInput("1\n2\n\nAna\nBen\n");
+        CaveInApp app = appWithInput("1\n2\n0\n\nAna\nBen\n");
         Game game = app.setUpGame();
         assertEquals(2, game.getPlayers().length);
         assertEquals(1, timesPrinted("Enter a number from 2 to 4."));
@@ -216,7 +216,7 @@ public class CaveInAppTest extends student.TestCase
     /** dig then bank scores the gems and passes play on. */
     public void testPlayTurnBank()
     {
-        CaveInApp app = appWithInput("2\nAna\nBen\ndig\nbank\n");
+        CaveInApp app = appWithInput("2\n0\nAna\nBen\ndig\nbank\n");
         Game game = app.setUpGame();
         app.playTurn();
         assertEquals(3, game.getPlayers()[0].getScore());
@@ -230,7 +230,7 @@ public class CaveInAppTest extends student.TestCase
     {
         // createCup adds reds last, so they sit at the front of the chain:
         // draw index 0 three times = three reds; face 3 = ROCKFALL.
-        CaveInApp app = appWithInput("2\nAna\nBen\ndig\n",
+        CaveInApp app = appWithInput("2\n0\nAna\nBen\ndig\n",
             new ScriptedRandom(0, 0, 0, 3, 3, 3));
         Game game = app.setUpGame();
         app.playTurn();
@@ -243,7 +243,7 @@ public class CaveInAppTest extends student.TestCase
     /** Banking to 13 or more ends the game. */
     public void testPlayTurnWins()
     {
-        CaveInApp app = appWithInput("2\nAna\nBen\ndig\nbank\n");
+        CaveInApp app = appWithInput("2\n0\nAna\nBen\ndig\nbank\n");
         Game game = app.setUpGame();
         game.getPlayers()[0].addPoints(12);
         app.playTurn();
@@ -272,7 +272,7 @@ public class CaveInAppTest extends student.TestCase
     /** Status shows the turn counts and every score. */
     public void testPrintStatus()
     {
-        CaveInApp app = appWithInput("2\nAna\nBen\n");
+        CaveInApp app = appWithInput("2\n0\nAna\nBen\n");
         Game game = app.setUpGame();
         Turn turn = new Turn(game.getCurrentPlayer(), game.getCup(),
             new ScriptedRandom(0));
@@ -284,6 +284,108 @@ public class CaveInAppTest extends student.TestCase
         assertTrue(text.contains("Ben 0"));
     }
 
+    // ----- readBotCount -----
+
+    /** A valid computer-player count is returned. */
+    public void testReadBotCount()
+    {
+        assertEquals(1, appWithInput("1\n").readBotCount(3));
+        assertEquals(0, appWithInput("0\n").readBotCount(2));
+    }
+
+    /** Words, negatives and counts above the player count re-prompt. */
+    public void testReadBotCountRepromptsBadInput()
+    {
+        CaveInApp app = appWithInput("none\n-1\n4\n2\n");
+        assertEquals(2, app.readBotCount(3));
+        assertEquals(3, timesPrinted("Enter a number from 0 to 3."));
+    }
+
+    // ----- setUpGame with bots -----
+
+    /** Bots are added after the humans and take no name prompt. */
+    public void testSetUpGameWithBot()
+    {
+        Game game = appWithInput("3\n1\nAna\nBen\n").setUpGame();
+        assertEquals(3, game.getPlayers().length);
+        assertEquals("Ana", game.getPlayers()[0].getName());
+        assertTrue(game.getPlayers()[2] instanceof Bot);
+        assertEquals("Bot 1", game.getPlayers()[2].getName());
+        assertFalse(game.getPlayers()[0] instanceof Bot);
+    }
+
+    /** A bad bot count during setup is re-prompted, not a crash. */
+    public void testSetUpGameBadBotCount()
+    {
+        CaveInApp app = appWithInput("2\n5\n2\n");
+        Game game = app.setUpGame();
+        assertEquals(2, game.getPlayers().length);
+        assertTrue(game.getPlayers()[0] instanceof Bot);
+        assertEquals(1, timesPrinted("Enter a number from 0 to 2."));
+    }
+
+    // ----- playTurn with a bot -----
+
+    /** A bot plays its own turn without reading any input. */
+    public void testPlayTurnBotNeedsNoInput()
+    {
+        // Ana is human, Bot 1 is the computer; skip Ana's turn by
+        // advancing, then let the bot play with no input left.
+        CaveInApp app = appWithInput("2\n1\nAna\n");
+        Game game = app.setUpGame();
+        game.nextTurn();
+        app.playTurn();
+        assertTrue(printed.toString().contains("Bot 1 chooses to dig."));
+        // every roll is 3 gems, so the bot keeps digging (risk stays low)
+        // until it can bank 13 and win
+        assertEquals(13, game.getPlayers()[1].getScore());
+        assertTrue(game.isGameOver());
+        assertSame(game.getPlayers()[1], game.getWinner());
+        assertEquals(13, game.getCup().size());
+    }
+
+    /** An all-bot game plays to a winner with no input at all. */
+    public void testRunAllBots()
+    {
+        CaveInApp app = appWithInput("3\n3\n", new Random(2114));
+        app.run();
+        assertTrue(app.getGame().isGameOver());
+        assertTrue(app.getGame().getWinner().getScore() >= 13);
+        assertEquals(13, app.getGame().getCup().size());
+    }
+
+    // ----- printRisk -----
+
+    /** The meter shows a percentage and a bar. */
+    public void testPrintRisk()
+    {
+        CaveInApp app = appWithInput("2\n0\nAna\nBen\n");
+        Game game = app.setUpGame();
+        Turn turn = new Turn(game.getCurrentPlayer(), game.getCup(),
+            new ScriptedRandom(0));
+        turn.roll();
+        app.printRisk(turn);
+        assertTrue(printed.toString().contains("Cave-in risk if you dig: ["));
+        assertTrue(printed.toString().contains("%"));
+    }
+
+    /** With only green dice left the meter reads 0%. */
+    public void testPrintRiskZero()
+    {
+        CaveInApp app = appWithInput("2\n0\nAna\nBen\n");
+        Game game = app.setUpGame();
+        game.getCup().clear();
+        for (int i = 0; i < 6; i++)
+        {
+            game.getCup().add(new Die(Die.DieColor.GREEN));
+        }
+        Turn turn = new Turn(game.getCurrentPlayer(), game.getCup(),
+            new ScriptedRandom(0));
+        turn.roll();
+        app.printRisk(turn);
+        assertTrue(printed.toString().contains("[----------] 0%"));
+    }
+
     // ----- run -----
 
     /** A whole game plays to a winner, refusing a dig with no dice. */
@@ -292,7 +394,7 @@ public class CaveInAppTest extends student.TestCase
         // Every roll is 3 gems. Ana digs until the cup is empty
         // (3+3+3+3+1 = 13 gems), tries one more dig, then banks 13.
         CaveInApp app = appWithInput(
-            "2\nAna\nBen\ndig\ndig\ndig\ndig\ndig\ndig\nbank\n");
+            "2\n0\nAna\nBen\ndig\ndig\ndig\ndig\ndig\ndig\nbank\n");
         app.run();
         assertTrue(app.getGame().isGameOver());
         assertEquals("Ana", app.getGame().getWinner().getName());
@@ -304,7 +406,7 @@ public class CaveInAppTest extends student.TestCase
     /** Input ending mid-game stops with an exception main() catches. */
     public void testRunInputEndsEarly()
     {
-        CaveInApp app = appWithInput("2\nAna\n");
+        CaveInApp app = appWithInput("2\n0\nAna\n");
         assertThrowsType(IllegalStateException.class, () -> app.run());
     }
 
