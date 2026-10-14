@@ -244,6 +244,17 @@ public class Turn
     }
 
     /**
+     * Copies the footprint dice waiting in the hand, so callers (the bot
+     * and the risk meter) can see their colors without changing the hand.
+     *
+     * @return a new array of the dice in the hand; empty if none
+     */
+    public Die[] getHand()
+    {
+        return hand.toArray(new Die[hand.size()]);
+    }
+
+    /**
      * @return number of dice set aside (gems and rockfalls) this turn
      */
     public int getSetAsideSize()

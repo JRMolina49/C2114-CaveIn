@@ -13,8 +13,12 @@ import java.util.Scanner;
  *   - anything other than "dig" or "bank"             -> re-prompt
  *   - "bank" before the first roll                    -> re-prompt
  *   - "dig" when no dice are left                     -> re-prompt
+ *   - computer-player count outside 0 to player count -> re-prompt
  * A cave-in ends the turn automatically, so the player is never asked to
  * dig after one.
+ *
+ * Stretch goals: computer players (Bot) take their own turns, and
+ * human players see a cave-in risk meter before each choice.
  *
  * Input and output are passed in so tests can feed a Scanner built from
  * a String and read what was printed.
@@ -120,19 +124,25 @@ public class CaveInApp
     }
 
     /**
-     * Asks for the player count and names, then creates the Game with a
-     * full cup. Players are collected in a LinkedChain<Player> in the
-     * order they were entered.
+     * Asks for the player count, how many are computer players, and the
+     * human players' names, then creates the Game with a full cup.
+     * Humans come first in the order entered, then bots ("Bot 1", ...).
+     * Players are collected in a LinkedChain<Player>.
      *
      * @return the new game
      */
     public Game setUpGame()
     {
         int count = readPlayerCount();
+        int bots = readBotCount(count);
         LinkedChain<Player> joined = new LinkedChain<Player>();
-        for (int i = 1; i <= count; i++)
+        for (int i = 1; i <= count - bots; i++)
         {
             joined.addToEnd(new Player(readName(i)));
+        }
+        for (int i = 1; i <= bots; i++)
+        {
+            joined.addToEnd(new Bot("Bot " + i));
         }
         Player[] players = joined.toArray(new Player[joined.size()]);
         game = new Game(players, createCup());
@@ -151,7 +161,21 @@ public class CaveInApp
 
         while (!turn.isOver())
         {
-            String command = readCommand(turn);
+            String command;
+            if (player instanceof Bot)
+            {
+                command = ((Bot)player).chooseCommand(turn, game.getCup());
+                out.println(player.getName() + " chooses to " + command
+                    + ".");
+            }
+            else
+            {
+                if (turn.canBank() && turn.canDig())
+                {
+                    printRisk(turn);
+                }
+                command = readCommand(turn);
+            }
             if (command.equals("dig"))
             {
                 Die.Face[] faces = turn.roll();
@@ -203,6 +227,35 @@ public class CaveInApp
                 // not a number; fall through to the error message
             }
             out.println("Enter a number from 2 to 4.");
+        }
+    }
+
+    /**
+     * Reads how many of the players are computer players, asking again
+     * until it is a whole number from 0 to the player count.
+     *
+     * @param playerCount the total number of players
+     * @return the number of computer players
+     */
+    public int readBotCount(int playerCount)
+    {
+        while (true)
+        {
+            String line = prompt("How many of them are computer players (0-"
+                + playerCount + ")? ");
+            try
+            {
+                int bots = Integer.parseInt(line);
+                if (bots >= 0 && bots <= playerCount)
+                {
+                    return bots;
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                // not a number; fall through to the error message
+            }
+            out.println("Enter a number from 0 to " + playerCount + ".");
         }
     }
 
@@ -294,6 +347,26 @@ public class CaveInApp
                 .append(p.getScore());
         }
         out.println(sb.toString());
+    }
+
+    /**
+     * Prints the risk meter: the chance that digging again causes a
+     * cave-in, as a percentage and a 10-block bar.
+     *
+     * @param turn the turn in progress
+     */
+    public void printRisk(Turn turn)
+    {
+        double risk = Bot.caveInRisk(turn, game.getCup());
+        int percent = (int)Math.round(risk * 100);
+        int blocks = (int)Math.round(risk * 10);
+        StringBuilder bar = new StringBuilder("[");
+        for (int i = 0; i < 10; i++)
+        {
+            bar.append(i < blocks ? '#' : '-');
+        }
+        bar.append("]");
+        out.println("Cave-in risk if you dig: " + bar + " " + percent + "%");
     }
 
     /**

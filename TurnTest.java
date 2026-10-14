@@ -203,6 +203,28 @@ public class TurnTest extends student.TestCase
         assertEquals(0, turn.getRockfallCount());
     }
 
+    // ----- getHand -----
+
+    /** The hand copy holds the footprint die and doesn't empty the hand. */
+    public void testGetHandReturnsFootprintDice()
+    {
+        Turn turn = new Turn(ana, cupOf(Die.DieColor.GREEN, 3),
+            new ScriptedRandom(0, 0, 0, 5, 0, 0));
+        turn.roll();
+        Die[] hand = turn.getHand();
+        assertEquals(1, hand.length);
+        assertEquals(Die.DieColor.GREEN, hand[0].getColor());
+        assertEquals(1, turn.getHandSize());
+    }
+
+    /** Before any roll the hand is an empty array, not null. */
+    public void testGetHandEmptyBeforeRoll()
+    {
+        Turn turn = new Turn(ana, CaveInApp.createCup(), new Random(1));
+        assertNotNull(turn.getHand());
+        assertEquals(0, turn.getHand().length);
+    }
+
     // ----- returnDiceToCup -----
 
     /** Every die goes back after a turn. */
