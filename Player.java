@@ -8,9 +8,10 @@ public class Player
     private String name = "";
     private int score = 0;
 
-    /*
+    /**
     * Constructor for the Player class.
     * @param name  the name of the player
+    * @throws IllegalArgumentException if name is null or blank
     */
     public Player(String name) 
     {
@@ -23,7 +24,7 @@ public class Player
 
     }
 
-    /*
+    /**
      * Getter method for the name of the player.
      * @return the player's name.
      */
@@ -32,7 +33,7 @@ public class Player
         return name;
     }
 
-    /*
+    /**
      * Getter method for the score of the player.
      * @return the player's score.
      */
@@ -41,9 +42,10 @@ public class Player
         return score;
     }
     
-    /*
+    /**
      * Adds the gained points to the player's score.
      * @param points  the points (gem count) to be added.
+     * @throws IllegalArgumentException if points is negative
      */
 
     public void addPoints(int points)

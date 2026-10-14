@@ -1,5 +1,5 @@
 
-/*
+/**
  * This class constructs the game object used for the Cave In game.
  * @author Joshua Molina
  * @version October 13, 2026
@@ -12,10 +12,11 @@ public class Game
     private Player winner;
     private boolean gameOver;
 
-    /*
+    /**
      * Constructs a new Game object with the players and dice cup.
      * @param players  array containing player names
      * @param cup  LinkedChain of die
+     * @throws IllegalArgumentException if players is null or empty, or if cup is null or empty
      */
     public Game(Player[] players, LinkedChain<Die> cup) 
     {
@@ -36,7 +37,7 @@ public class Game
         this.gameOver = false;
     }
 
-    /* 
+    /**
      * Getter method for the current player.
      * @return the player whose turn it is.
     */
@@ -45,7 +46,7 @@ public class Game
         return players[currentTurn];
     }
 
-    /*
+    /**
      * If the game is not over, calculates the next player's turn.
      */
     public void nextTurn() 
@@ -57,7 +58,7 @@ public class Game
 
     }
 
-    /*
+    /**
      * Ends the game and sets the winner.
      * @param winner  the player who won the game.
      */
@@ -67,7 +68,7 @@ public class Game
         this.gameOver = true;
     }
     
-    /*
+    /**
      * Checks if the game is over.
      * @return true if endGame() has been called.
      */
@@ -76,7 +77,7 @@ public class Game
         return gameOver;
     }
 
-    /*
+    /**
      * Getter method for winner.
      * @return the player who won the game.
      */
@@ -85,7 +86,7 @@ public class Game
         return winner;
     }
     
-    /*
+    /**
      * Getter method for players.
      * @return the number of players in the game.
      */
@@ -94,7 +95,7 @@ public class Game
         return players;
     }
 
-    /*
+    /**
      * Getter method for the cup of dice.
      * @return the LinkedChain of die (aka. the cup).
      */

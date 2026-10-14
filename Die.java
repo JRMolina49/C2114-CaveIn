@@ -1,5 +1,5 @@
 import java.util.Random;
-/*
+/**
  * This class constructs the die object used for the Cave In game.
  * @author Joshua Molina
  * @version October 13, 2026
@@ -7,7 +7,7 @@ import java.util.Random;
 public class Die 
 {
 
-    /*
+    /**
      * Enumerated type that holds the potential colors of the die.
      */
     public enum DieColor 
@@ -15,7 +15,7 @@ public class Die
         GREEN, YELLOW, RED;
     }
 
-    /*
+    /**
      * Enumerated type that holds the potential faces of the die.
      */
     public enum Face 
@@ -26,7 +26,7 @@ public class Die
     private DieColor color;
     private Face[] faces;
 
-    /*
+    /**
      * Constructor for the Die class.
      * @param color  the color of the die 
      */
@@ -65,7 +65,7 @@ public class Die
         }
     }
     
-    /*
+    /**
      * Getter method for the color of the die.
      * @return the die's color.
      */
@@ -74,7 +74,7 @@ public class Die
         return color;
     }
 
-    /*
+    /**
      * Rolls the die, calling a random face from the constructed 
      * array of faces.
      * @param rng  the random number generator to use
