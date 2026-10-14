@@ -40,10 +40,10 @@ Attribution Table:
 | CaveInApp.java     | Sathvik                | Built main application flow and console interface from specs; Integrated components and play-tested in terminal                                            |
 | Bot.java           | Sathvik                | Designed and implemented computer-opponent AI stretch goal with AI assistance; refined state logic and play-tested.                                        |
 | ScriptedRandom.java| Sathvik                | Built deterministic mock RNG helper to ensure predictable dice rolls in automated tests.                                                                   |
-| GameTest.java      | Matthew/Sathvik        |                                                                                                                                                            |
-| DieTest.java       | Matthew/Sathvik        |                                                                                                                                                            |
-| PlayerTest.java    | Matthew/Sathvik        |                                                                                                                                                            |
+| GameTest.java      | Matthew/Sathvik        | Designed through test cases for game calls on turn management and application lifetime.                                                                    |
+| DieTest.java       | Matthew/Sathvik        | Tested and configured die creation with enumerated value capture and contraints with Face[] construction.                                                  |
+| PlayerTest.java    | Matthew/Sathvik        | Tested player profile creation and return methods for player data.                                                                                         |
 | TurnTest.java      | Sathvik                | Authored unit test suite from spec test plan; verified edge cases and test suite execution.                                                                |
 | CaveInAppTest.java | Sathvik                | Developed integration tests based on spec test plan; validated app flow and test harness.                                                                  |
 | BotTest.java       | Sathvik                | Created test scenarios for bot behavior; validated outcomes across                                                                                         |
-
+|LinkedChainTest.java| Matthew/Sathvik        | Created test scenarios for bot behavior; validated outcomes across                                                                                         |
