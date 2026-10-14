@@ -9,7 +9,7 @@ Reflection:
 - What changed from our specifications?
   > While we tried to adhere to the specifications as faithfully as possible, we found ourselves needing to make minor tweaks to the method listing and definitions in order to achieve the vision of what this application is supposed to do. For example, while the specs list what methods are supposed to be found within the Game.java class, an addition class, endGame(), was included because the application had no way to influence the private variables of winner and gameOver. There were also changes with fleshing out the scope of our application. In our previous documentation, the color of the die didn't really indicate anything. Now, they specifically affect the probability of gaining either a GEM, FOOTPRINT, or ROCKFALL result, which is reflected in the layout of the enumerated Face class.
 - What changed in the LinkedChain?
-  > The LinkedChain.java class was unchanged so our application would work within its well-defined constraints in order to produce an application that focused more on our utility of the class rather than our own modified version.
+  > The LinkedChain.java class was modified slightly to include a randomRemove() class that would allow us to randomly remove Die objects from the LinkedChain created to hold them, a crucial functionality for the game to work.
 - What happened to your unknowns?
   > TBD (Needs full code)
 - What doesn't work yet?
