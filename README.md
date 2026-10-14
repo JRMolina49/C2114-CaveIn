@@ -29,7 +29,14 @@ Attribution Table:
 
 | Class              | Contributor(s)         | Process                                                                                                      |
 |--------------------|------------------------|--------------------------------------------------------------------------------------------------------------|
+| LinkedList.java    | Josh (Edited)          | Edited to include a method needed for the application (AI suggestions on formatting).                        |
 | Game.java          | Josh                   | Code crafted by hand and then refined with use of AI suggestions/error catching.                             |
-| Die.java           | Josh                   | Code crafted by hand and then refined with use of Ai suggestions/error catching.                             |
-| Player.java        | Josh                   | Code crafted by hand and then refined with use of Ai suggestions/error catching.                             |
-|                    |                        |                                                                                                              |
+| Die.java           | Josh                   | Code crafted by hand and then refined with use of AI suggestions/error catching.                             |
+| Player.java        | Josh                   | Code crafted by hand and then refined with use of AI suggestions/error catching.                             |
+| Turn.java          |                        |                                                                                                              |
+| CaveInApp.java     |                        |                                                                                                              |
+| GameTest.java      |                        |                                                                                                              |
+| DieTest.java       |                        |                                                                                                              | 
+| PlayerTest.java    |                        |                                                                                                              |
+| TurnTest.java      |                        |                                                                                                              |
+| CaveInApp.java     |                        |                                                                                                              |         
