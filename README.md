@@ -2,7 +2,10 @@
 CS 2114 Project 2 Repository 
 
 Instructions for Compiling and Running:
-> 
+- If running in an IDE:
+   > This application can be run on OS with a JDK installed. You can pull the git repository down with $ git clone <HTTP url>. The application can then be played with a simple run of the CaveInApp file.
+- If running on shell:
+  > Pull down the repository with compile with $ git clone <HTTP url>, change directory into your local repository file, and compile via a javac *.java call. Running the application requires a run command of java CaveInApp.
 
 
 Reflection:
@@ -35,8 +38,11 @@ Attribution Table:
 | Player.java        | Josh                   | Code crafted by hand and then refined with use of AI suggestions/error catching.                             |
 | Turn.java          | Sathvik                |                                                                                                              |
 | CaveInApp.java     | Sathvik                |                                                                                                              |
+| Bot.java           | Sathvik                |                                                                                                              |
 | GameTest.java      | Sathvik                |                                                                                                              |
 | DieTest.java       | Mattew                 |                                                                                                              | 
 | PlayerTest.java    | Matthew                |                                                                                                              |
 | TurnTest.java      | Sathvik                |                                                                                                              |
-| CaveInApp.java     | Matthew                |                                                                                                              |         
+| CaveInApp.java     | Matthew                |                                                                                                              |  
+| BotTest.java       | Sathvik                |                                                                                                              |
+
