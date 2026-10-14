@@ -27,15 +27,12 @@ Next Steps:
 
 Attribution Table:
 
-| Class              | Contributor(s)         | Process                                      |
-|--------------------|------------------------|----------------------------------------------|
-| Game.java          | Josh                   | Code crafted by hand and then refined with   |
-|                    |                        | use of AI suggestions/error catching.        |
-|--------------------|------------------------|----------------------------------------------|
-| Die.java           | Josh                   | Code crafted by hand and then refined with   |
-|                    |                        | use of Ai suggestions/error catching.        |
-|--------------------|------------------------|----------------------------------------------|
-| Player.java        | Josh                   | Code crafted by hand and then refined with   |
-|                    |                        | use of Ai suggestions/error catching.        |
-|--------------------|------------------------|----------------------------------------------|
-|                    |                        |                                              |
+| Class              | Contributor(s)         | Process                                                                                                      |
+|--------------------|------------------------|--------------------------------------------------------------------------------------------------------------|
+| Game.java          | Josh                   | Code crafted by hand and then refined with use of AI suggestions/error catching.                             |
+|--------------------|------------------------|--------------------------------------------------------------------------------------------------------------|
+| Die.java           | Josh                   | Code crafted by hand and then refined with use of Ai suggestions/error catching.                             |
+|--------------------|------------------------|--------------------------------------------------------------------------------------------------------------|
+| Player.java        | Josh                   | Code crafted by hand and then refined with use of Ai suggestions/error catching.                             |
+|--------------------|------------------------|--------------------------------------------------------------------------------------------------------------|
+|                    |                        |                                                                                                              |
