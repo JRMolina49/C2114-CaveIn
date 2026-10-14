@@ -8,3 +8,7 @@ oracleJdk-27/
 /Player.class
 /Bot.class
 /BotTest.class
+/DieTest.class
+/GameTest.class
+/LinkedChainTest.class
+/PlayerTest.class
