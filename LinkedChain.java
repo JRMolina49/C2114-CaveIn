@@ -24,10 +24,14 @@
  *   toArray          O(n)
  *
  * @author CS 2114 Staff
+ * @author Joshua Molina  Included a new removeRandom() method.
  * @version September 2026
  *
  * @param <T> the type of entries stored in the chain
  */
+
+import java.util.Random;
+
 public class LinkedChain<T>
 {
     private Node<T> firstNode;   // reference to the first node, or null
@@ -134,6 +138,42 @@ public class LinkedChain<T>
             current = current.next;
         }
         return false;
+    }
+
+    /**
+     * Removes a random entry from this LinkedList.
+     * @param rng  the random number generator to use.
+     * @return the removed entry, or null if the chain is empty.
+     */
+    public T removeRandom(Random rng) 
+    {
+        if (firstNode == null)
+        {
+            return null;
+        }
+
+        Node<T> current = firstNode;
+        Node<T> previous = null;
+
+        int randomIndex = rng.nextInt(numberOfEntries);
+
+        for (int i = 0; i < randomIndex; i++) 
+        {
+            previous = current;
+            current = current.next;
+        }
+
+        if (previous == null) 
+        {
+            firstNode = current.next;
+        } 
+        else 
+        {
+            previous.next = current.next;
+        }
+
+        numberOfEntries--;
+        return current.data;
     }
 
     /**
