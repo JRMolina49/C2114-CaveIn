@@ -7,6 +7,7 @@ public class Player
 {
     private String name = "";
     private int score = 0;
+    private LinkedChain<Die> ownDice = new LinkedChain<Die>(); // bought or cracked dice that belong to this player
 
     /**
     * Constructor for the Player class.
@@ -56,5 +57,65 @@ public class Player
         }
 
         score += points;
+    }
+
+    /**
+     * Spends banked points, for example in the DiceShop.
+     * @param points  the number of points to spend.
+     * @throws IllegalArgumentException if points is negative or more
+     *         than the player's score
+     */
+    public void spendPoints(int points)
+    {
+        if (points < 0 || points > score)
+        {
+            throw new IllegalArgumentException(
+                "Cannot spend " + points + " points with a score of " + score + ".");
+        }
+
+        score -= points;
+    }
+
+    /**
+     * Gives this player a die of their own (a gold die from the shop, or
+     * a cracked die after a cave-in). It joins the cup on their turns.
+     * @param die  the die to add.
+     * @throws IllegalArgumentException if die is null
+     */
+    public void addOwnDie(Die die)
+    {
+        if (die == null)
+        {
+            throw new IllegalArgumentException("Die cannot be null.");
+        }
+
+        ownDice.add(die);
+    }
+
+    /**
+     * Getter method for this player's own dice.
+     * @return the LinkedChain holding the player's own dice.
+     */
+    public LinkedChain<Die> getOwnDice()
+    {
+        return ownDice;
+    }
+
+    /**
+     * Counts this player's own dice of one color.
+     * @param color  the color to count.
+     * @return how many of the player's own dice have that color.
+     */
+    public int countOwnDice(Die.DieColor color)
+    {
+        int count = 0;
+        for (Die die : ownDice.toArray(new Die[ownDice.size()]))
+        {
+            if (die.getColor() == color)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 }

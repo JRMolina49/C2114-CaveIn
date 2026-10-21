@@ -12,3 +12,6 @@ oracleJdk-27/
 /GameTest.class
 /LinkedChainTest.class
 /PlayerTest.class
+/DiceShop$Item.class
+/DiceShop.class
+/DiceShopTest.class

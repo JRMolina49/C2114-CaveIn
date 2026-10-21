@@ -386,6 +386,65 @@ public class CaveInAppTest extends student.TestCase
         assertTrue(printed.toString().contains("[----------] 0%"));
     }
 
+    // ----- dice shop in the console -----
+
+    /** "shop" is accepted before the first roll. */
+    public void testReadCommandShopBeforeRoll()
+    {
+        CaveInApp app = appWithInput("SHOP\n");
+        Turn turn = new Turn(new Player("Ana"), CaveInApp.createCup(),
+            new Random(1));
+        assertEquals("shop", app.readCommand(turn));
+    }
+
+    /** "shop" after rolling is re-prompted. */
+    public void testReadCommandShopAfterRoll()
+    {
+        CaveInApp app = appWithInput("shop\nbank\n");
+        Turn turn = new Turn(new Player("Ana"), CaveInApp.createCup(),
+            new ScriptedRandom(0));
+        turn.roll();
+        assertEquals("bank", app.readCommand(turn));
+        assertEquals(1,
+            timesPrinted("The shop is only open before your first roll."));
+    }
+
+    /** Buying a gold die spends 4 points and adds the die. */
+    public void testOpenShopBuyGold()
+    {
+        Player ana = new Player("Ana");
+        ana.addPoints(5);
+        CaveInApp app = appWithInput("1\ndone\n");
+        app.openShop(ana);
+        assertEquals(1, ana.getScore());
+        assertEquals(1, ana.countOwnDice(Die.DieColor.GOLD));
+        assertTrue(printed.toString().contains("Bought."));
+    }
+
+    /** Bad choices, too few points and nothing to repair all re-prompt. */
+    public void testOpenShopBadInput()
+    {
+        Player ana = new Player("Ana");
+        ana.addPoints(3);
+        CaveInApp app = appWithInput("gold\n9\n1\n2\ndone\n");
+        app.openShop(ana);
+        assertEquals(2, timesPrinted("Type a number from 1 to 2, or done."));
+        assertEquals(1, timesPrinted("Not enough points for that."));
+        assertEquals(1, timesPrinted("You have no cracked dice to repair."));
+        assertEquals(3, ana.getScore());
+    }
+
+    /** A turn can visit the shop, then dig and bank as usual. */
+    public void testPlayTurnWithShop()
+    {
+        CaveInApp app = appWithInput("2\n0\nAna\nBen\nshop\ndone\ndig\nbank\n");
+        Game game = app.setUpGame();
+        app.playTurn();
+        assertTrue(printed.toString().contains("--- Dice shop ---"));
+        assertEquals(3, game.getPlayers()[0].getScore());
+        assertEquals("Ben", game.getCurrentPlayer().getName());
+    }
+
     // ----- run -----
 
     /** A whole game plays to a winner, refusing a dig with no dice. */

@@ -8,7 +8,8 @@ import java.util.Random;
  * A Turn owns three LinkedChains of its own (hand, set-aside pile, face
  * tally) and borrows the shared cup from Game. Dice are only ever moved
  * between chains with remove/add, never copied, so the cup + hand +
- * set-aside pile always hold the same 13 dice.
+ * set-aside pile always hold the same 13 dice, plus any of the player's
+ * own dice (bought or cracked) borrowed for this turn.
  *
  * Validation that lives here: banking before rolling, rolling after the
  * turn is over, and rolling with no dice left all throw
@@ -40,6 +41,7 @@ public class Turn
     private LinkedChain<Die> hand;
     private LinkedChain<Die> setAside;
     private LinkedChain<Die.Face> tally;
+    private LinkedChain<Die> borrowed;
     private TurnState state;
     private Random rng;
 
@@ -65,6 +67,7 @@ public class Turn
         this.hand = new LinkedChain<Die>();
         this.setAside = new LinkedChain<Die>();
         this.tally = new LinkedChain<Die.Face>();
+        this.borrowed = new LinkedChain<Die>();
         this.state = TurnState.READY;
     }
 
@@ -85,6 +88,20 @@ public class Turn
             throw new IllegalStateException(isOver()
                 ? "The turn is over; you cannot dig again."
                 : "No dice left to roll; you must bank.");
+        }
+
+        // On the first roll, the player's own dice (gold or cracked) join
+        // the cup for this turn only; returnDiceToCup() gives them back.
+        // Waiting until now lets the player visit the DiceShop first.
+        if (state == TurnState.READY)
+        {
+            LinkedChain<Die> own = player.getOwnDice();
+            while (!own.isEmpty())
+            {
+                Die die = own.remove();
+                borrowed.add(die);
+                cup.add(die);
+            }
         }
 
         // Draw back up to 3 dice, chosen at random from the cup.
@@ -120,6 +137,9 @@ public class Turn
         if (getRockfallCount() >= ROCKFALLS_TO_CAVE_IN)
         {
             state = TurnState.CAVED_IN;
+            // Our scope's twist: every cave-in adds a cracked die to the
+            // player's own dice for good.
+            player.addOwnDie(new Die(Die.DieColor.CRACKED));
         }
         else
         {
@@ -185,6 +205,14 @@ public class Turn
             cup.add(setAside.remove());
         }
         tally.clear();
+
+        // Give the player's own dice back; the shared cup keeps its 13.
+        while (!borrowed.isEmpty())
+        {
+            Die die = borrowed.remove();
+            cup.remove(die);
+            player.addOwnDie(die);
+        }
     }
 
     /**
@@ -263,8 +291,25 @@ public class Turn
     }
 
     /**
+     * @return how many of the player's own dice joined the cup this turn
+     */
+    public int getBorrowedCount()
+    {
+        return borrowed.size();
+    }
+
+    /**
+     * @return a copy of the player's own dice that joined the cup this turn
+     */
+    public Die[] getBorrowedDice()
+    {
+        return borrowed.toArray(new Die[borrowed.size()]);
+    }
+
+    /**
      * Total dice held by the cup, hand and set-aside pile. Used by tests
-     * to prove no die is ever lost or copied (should always be 13).
+     * to prove no die is ever lost or copied (always 13 plus the
+     * player's own dice borrowed this turn).
      *
      * @return cup size + hand size + set-aside size
      */

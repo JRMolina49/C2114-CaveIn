@@ -173,7 +173,8 @@ public class Bot extends Player
 
     /**
      * Chance that one die of the given color rolls a ROCKFALL. Matches
-     * the face layouts in Die: green 0 of 6, yellow 1 of 6, red 3 of 6.
+     * the face layouts in Die: green 0 of 6, yellow 1 of 6, red 3 of 6,
+     * gold 0 of 6, cracked 4 of 6.
      * (BotTest checks these numbers against Die itself.)
      *
      * @param color the die color
@@ -191,6 +192,8 @@ public class Bot extends Player
                 return 1.0 / 6;
             case RED:
                 return 3.0 / 6;
+            case CRACKED:
+                return 4.0 / 6;
             default:
                 return 0.0;
         }

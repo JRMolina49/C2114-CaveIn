@@ -225,6 +225,47 @@ public class TurnTest extends student.TestCase
         assertEquals(0, turn.getHand().length);
     }
 
+    // ----- the player's own dice (dice shop) -----
+
+    /** Own dice join the cup on the first roll and go back afterwards. */
+    public void testOwnDiceBorrowedAndReturned()
+    {
+        LinkedChain<Die> cup = CaveInApp.createCup();
+        Die gold = new Die(Die.DieColor.GOLD);
+        ana.addOwnDie(gold);
+        Turn turn = new Turn(ana, cup, new Random(3));
+        assertEquals(0, turn.getBorrowedCount());
+        turn.roll();
+        assertEquals(1, turn.getBorrowedCount());
+        assertEquals(14, turn.diceAccountedFor());
+        assertEquals(0, ana.getOwnDice().size());
+        turn.returnDiceToCup();
+        assertEquals(13, cup.size());
+        assertFalse(cup.contains(gold));
+        assertTrue(ana.getOwnDice().contains(gold));
+    }
+
+    /** A cave-in adds one cracked die to the player's own dice. */
+    public void testCaveInAddsCrackedDie()
+    {
+        Turn turn = new Turn(ana, cupOf(Die.DieColor.RED, 3),
+            new ScriptedRandom(0, 0, 0, 3, 3, 3));
+        turn.roll();
+        assertTrue(turn.isCavedIn());
+        assertEquals(1, ana.countOwnDice(Die.DieColor.CRACKED));
+    }
+
+    /** No cave-in, no cracked die; nothing borrowed before a roll. */
+    public void testNoCrackedDieWithoutCaveIn()
+    {
+        Turn turn = new Turn(ana, cupOf(Die.DieColor.GREEN, 6),
+            new ScriptedRandom(0));
+        assertEquals(0, turn.getBorrowedDice().length);
+        turn.roll();
+        turn.bank();
+        assertEquals(0, ana.countOwnDice(Die.DieColor.CRACKED));
+    }
+
     // ----- returnDiceToCup -----
 
     /** Every die goes back after a turn. */
@@ -253,8 +294,9 @@ public class TurnTest extends student.TestCase
 
     /**
      * Plays 500 random turns. After every roll there must be 13 dice
-     * between cup, hand and pile; after every turn the cup must hold the
-     * same 13 dice objects (6 green, 4 yellow, 3 red, none copied).
+     * (plus the player's own cracked dice borrowed that turn) between cup,
+     * hand and pile; after every turn the cup must hold the same 13 dice
+     * objects (6 green, 4 yellow, 3 red, none copied).
      */
     public void testThirteenDiceNeverLostOrCopied()
     {
@@ -270,7 +312,8 @@ public class TurnTest extends student.TestCase
                 if (turn.canDig() && (!turn.canBank() || rng.nextBoolean()))
                 {
                     turn.roll();
-                    assertEquals(13, turn.diceAccountedFor());
+                    assertEquals(13 + turn.getBorrowedCount(),
+                        turn.diceAccountedFor());
                 }
                 else
                 {

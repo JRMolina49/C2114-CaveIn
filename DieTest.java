@@ -76,6 +76,22 @@ public class DieTest extends student.TestCase
         assertEquals(3, c[Die.Face.ROCKFALL.ordinal()]);
     }
 
+    /** Gold: all six faces are gems. */
+    public void testRollGoldFaces()
+    {
+        int[] c = countFaces(new Die(Die.DieColor.GOLD));
+        assertEquals(6, c[Die.Face.GEM.ordinal()]);
+    }
+
+    /** Cracked: 1 gem, 1 footprint, 4 rockfalls. */
+    public void testRollCrackedFaces()
+    {
+        int[] c = countFaces(new Die(Die.DieColor.CRACKED));
+        assertEquals(1, c[Die.Face.GEM.ordinal()]);
+        assertEquals(1, c[Die.Face.FOOTPRINT.ordinal()]);
+        assertEquals(4, c[Die.Face.ROCKFALL.ordinal()]);
+    }
+
     /** Rolling with no random generator fails instead of guessing. */
     public void testRollNullRandom()
     {
