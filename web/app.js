@@ -8,6 +8,7 @@ const screens = {
   howto: document.getElementById("howto-screen"),
   round: document.getElementById("round-screen"),
   game: document.getElementById("game-screen"),
+  shop: document.getElementById("shop-screen"),
   winner: document.getElementById("winner-screen")
 };
 
@@ -29,7 +30,9 @@ const assets = {
 const dieOutcomes = {
   green: new Set(["gem", "footprint"]),
   yellow: new Set(["gem", "footprint", "rockfall"]),
-  red: new Set(["gem", "rockfall"])
+  red: new Set(["gem", "rockfall"]),
+  gold: new Set(["gem"]),
+  cracked: new Set(["gem", "footprint", "rockfall"])
 };
 
 function resizeScene() {
@@ -276,6 +279,10 @@ function updateGame(state) {
   if (!state.started) {
     return;
   }
+  const currentPlayer = state.players.find(player => player.current);
+  const shopButton = document.getElementById("shop-button");
+  shopButton.hidden = !(state.shopAvailable
+    && currentPlayer && !currentPlayer.bot);
   document.getElementById("game-round").textContent = state.round;
   document.getElementById("game-player").textContent = state.currentPlayer || "";
   document.getElementById("gems-count").textContent = state.gemsInHand;
@@ -311,6 +318,72 @@ function updateGame(state) {
     icon.alt = "Rockfall";
     rocks.append(icon);
   }
+  if (state.shopOpen) {
+    renderShop(state);
+  }
+}
+
+function renderShop(state) {
+  const list = document.getElementById("shop-player-list");
+  list.replaceChildren();
+  for (const player of state.players) {
+    const row = document.createElement("div");
+    row.className = `score-row${player.current ? " current" : ""}`;
+    const icon = document.createElement("img");
+    icon.src = assets[player.color] || assets.red;
+    icon.alt = "";
+    const details = document.createElement("div");
+    details.className = "score-copy";
+    const name = document.createElement("span");
+    name.className = "score-name";
+    name.textContent = player.name + (player.bot ? " · BOT" : "");
+    const score = document.createElement("span");
+    score.className = "score-total";
+    score.textContent = `${player.score} gems`;
+    details.append(name, score);
+    row.append(icon, details);
+    list.append(row);
+  }
+  document.getElementById("gold-die-price").textContent =
+    state.goldDiePrice;
+  document.getElementById("repair-price").textContent = state.repairPrice;
+  updateShopSelection();
+}
+
+function currentShopPlayer() {
+  return gameState
+    ? gameState.players.find(player => player.current)
+    : null;
+}
+
+function updateShopSelection() {
+  const player = currentShopPlayer();
+  if (!player || !gameState) {
+    return;
+  }
+  const goldButton = document.getElementById("gold-shop-item");
+  const repairButton = document.getElementById("repair-shop-item");
+  const goldSelected = goldButton.getAttribute("aria-pressed") === "true";
+  const repairSelected = repairButton.getAttribute("aria-pressed") === "true";
+  const goldPrice = Number(gameState.goldDiePrice);
+  const repairPrice = Number(gameState.repairPrice);
+  goldButton.disabled = player.score < goldPrice;
+  repairButton.disabled = player.crackedDice === 0
+    || player.score < repairPrice;
+  const total = (goldSelected ? goldPrice : 0)
+    + (repairSelected ? repairPrice : 0);
+  document.getElementById("shop-total").textContent = total;
+}
+
+function toggleShopItem(button) {
+  if (button.disabled) {
+    return;
+  }
+  const selected = button.getAttribute("aria-pressed") === "true";
+  button.setAttribute("aria-pressed", String(!selected));
+  button.classList.toggle("selected", !selected);
+  document.getElementById("shop-message").textContent = "";
+  updateShopSelection();
 }
 
 function resultAsset(result) {
@@ -318,7 +391,9 @@ function resultAsset(result) {
     throw new Error(`Invalid ${result.color} die outcome: ${result.face}.`);
   }
   if (result.face === "gem") {
-    return `assets/gem-${result.color}.svg`;
+    return result.color === "gold"
+      ? "assets/gem-gold.svg"
+      : `assets/gem-${result.color}.svg`;
   }
   if (result.face === "footprint") {
     return "assets/footprint-icon.svg";
@@ -440,6 +515,83 @@ document.getElementById("bank-button").addEventListener("click", async () => {
   }
 });
 
+document.getElementById("shop-button").addEventListener("click", async () => {
+  if (waiting) {
+    return;
+  }
+  waiting = true;
+  try {
+    const response = await request("/api/shop/open");
+    updateGame(response.state);
+    const goldButton = document.getElementById("gold-shop-item");
+    const repairButton = document.getElementById("repair-shop-item");
+    for (const button of [goldButton, repairButton]) {
+      button.setAttribute("aria-pressed", "false");
+      button.classList.remove("selected");
+    }
+    const message = document.getElementById("shop-message");
+    message.textContent = "";
+    message.classList.remove("error");
+    renderShop(response.state);
+    await flickerTransition(() => showScreen("shop"));
+    goldButton.focus();
+  } catch (error) {
+    displayError(error);
+  } finally {
+    waiting = false;
+  }
+});
+
+document.getElementById("gold-shop-item").addEventListener("click", event => {
+  toggleShopItem(event.currentTarget);
+});
+
+document.getElementById("repair-shop-item").addEventListener("click", event => {
+  toggleShopItem(event.currentTarget);
+});
+
+document.getElementById("purchase-shop-button")
+  .addEventListener("click", async () => {
+    if (waiting) {
+      return;
+    }
+    const gold = document.getElementById("gold-shop-item")
+      .getAttribute("aria-pressed") === "true";
+    const repair = document.getElementById("repair-shop-item")
+      .getAttribute("aria-pressed") === "true";
+    const total = Number(document.getElementById("shop-total").textContent);
+    waiting = true;
+    const button = document.getElementById("purchase-shop-button");
+    button.disabled = true;
+    try {
+      const response = await request("/api/shop/purchase", {
+        gold: String(gold),
+        repair: String(repair)
+      });
+      updateGame(response.state);
+      const purchase = [gold ? "Gold Die" : "", repair ? "Repair" : ""]
+        .filter(Boolean);
+      document.getElementById("turn-message").textContent = purchase.length
+        ? `Purchased ${purchase.join(" and ")} for ${total} gems.`
+        : "You left the shop without purchasing anything.";
+      for (const itemButton of [
+        document.getElementById("gold-shop-item"),
+        document.getElementById("repair-shop-item")
+      ]) {
+        itemButton.setAttribute("aria-pressed", "false");
+        itemButton.classList.remove("selected");
+      }
+      await flickerTransition(() => showScreen("game"));
+    } catch (error) {
+      const message = document.getElementById("shop-message");
+      message.textContent = error.message;
+      message.classList.add("error");
+    } finally {
+      button.disabled = false;
+      waiting = false;
+    }
+  });
+
 async function showWinner(state) {
   const winner = state.winner || state.currentPlayer || "A player";
   await flickerTransition(() => showScreen("winner"));
@@ -469,6 +621,10 @@ async function restoreState() {
     const result = await response.json();
     if (result.state && result.state.started) {
       updateGame(result.state);
+      if (result.state.shopOpen) {
+        renderShop(result.state);
+        showScreen("shop");
+      }
     }
   } catch (error) {
     console.error("Could not read game state:", error);

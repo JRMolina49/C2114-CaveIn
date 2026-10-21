@@ -25,12 +25,15 @@ public class WebServer
     private final HttpServer server;
     private final Path webRoot;
     private final Object stateLock = new Object();
+    private final DiceShop shop = new DiceShop();
     private Game game;
     private Turn turn;
     private Random rng;
     private String[] playerColors = new String[0];
     private int round = 1;
     private int completedTurns;
+    private boolean shopAvailable;
+    private boolean shopOpen;
 
     /**
      * Creates the local HTTP server.
@@ -102,21 +105,41 @@ public class WebServer
                 {
                     requireGame();
                     RollOutcome outcome = rollOnce();
+                    shopAvailable = !outcome.cavedIn
+                        && turn != null && turn.canBank()
+                        && !(game.getCurrentPlayer() instanceof Bot);
                     sendJson(exchange, 200,
                         responseJson(outcome, playBotsUntilHuman()));
+                }
+                else if ("/api/shop/open".equals(path))
+                {
+                    openShop();
+                    sendJson(exchange, 200, responseJson(null, null));
+                }
+                else if ("/api/shop/purchase".equals(path))
+                {
+                    purchaseShopItems(form);
+                    sendJson(exchange, 200, responseJson(null, null));
                 }
                 else if ("/api/action".equals(path))
                 {
                     requireGame();
+                    if (shopOpen)
+                    {
+                        throw new IllegalStateException(
+                            "Complete the shop purchase before continuing.");
+                    }
                     String action = form.get("action");
                     if ("dig".equals(action))
                     {
+                        shopAvailable = false;
                         RollOutcome outcome = rollOnce();
                         sendJson(exchange, 200,
                             responseJson(outcome, playBotsUntilHuman()));
                     }
                     else if ("bank".equals(action))
                     {
+                        shopAvailable = false;
                         bankCurrentTurn(exchange);
                     }
                     else
@@ -220,7 +243,87 @@ public class WebServer
         rng = new Random();
         round = 1;
         completedTurns = 0;
+        shopAvailable = false;
+        shopOpen = false;
         turn = new Turn(game.getCurrentPlayer(), game.getCup(), rng);
+    }
+
+    private void openShop()
+    {
+        requireGame();
+        if (!shopAvailable || shopOpen || turn == null || !turn.canBank()
+            || game.getCurrentPlayer() instanceof Bot)
+        {
+            throw new IllegalStateException(
+                "The shop is only available at the first human dig/bank choice.");
+        }
+        shopAvailable = false;
+        shopOpen = true;
+    }
+
+    private void purchaseShopItems(Map<String, String> form)
+    {
+        requireGame();
+        if (!shopOpen || turn == null || game.getCurrentPlayer() instanceof Bot)
+        {
+            throw new IllegalStateException("The shop is not open.");
+        }
+        boolean goldSelected = readSelection(form, "gold");
+        boolean repairSelected = readSelection(form, "repair");
+        Player player = game.getCurrentPlayer();
+        int total = (goldSelected ? DiceShop.Item.GOLD_DIE.getPrice() : 0)
+            + (repairSelected ? DiceShop.Item.REPAIR.getPrice() : 0);
+
+        if (goldSelected
+            && !shop.canBuy(player, DiceShop.Item.GOLD_DIE, turn))
+        {
+            throw new IllegalArgumentException(
+                "You cannot afford the gold die.");
+        }
+        if (repairSelected
+            && !shop.canBuy(player, DiceShop.Item.REPAIR, turn))
+        {
+            throw new IllegalArgumentException(
+                "You need a cracked die and enough gems to repair it.");
+        }
+        if (player.getScore() < total)
+        {
+            throw new IllegalArgumentException(
+                "You do not have enough gems for those selections.");
+        }
+
+        if (repairSelected
+            && !shop.buy(player, DiceShop.Item.REPAIR, turn))
+        {
+            throw new IllegalStateException(
+                "The selected cracked die could not be repaired.");
+        }
+        if (goldSelected)
+        {
+            if (!shop.buy(player, DiceShop.Item.GOLD_DIE, turn))
+            {
+                throw new IllegalStateException(
+                    "The selected gold die could not be purchased.");
+            }
+            turn.borrowOwnDice();
+        }
+        shopOpen = false;
+    }
+
+    private static boolean readSelection(
+        Map<String, String> form, String name)
+    {
+        String value = form.get(name);
+        if (value == null || "false".equals(value))
+        {
+            return false;
+        }
+        if ("true".equals(value))
+        {
+            return true;
+        }
+        throw new IllegalArgumentException(
+            "Shop selection must be true or false.");
     }
 
     private RollOutcome rollOnce()
@@ -323,6 +426,8 @@ public class WebServer
 
     private void finishTurnDiceOnly()
     {
+        shopAvailable = false;
+        shopOpen = false;
         if (turn != null)
         {
             turn.returnDiceToCup();
@@ -332,6 +437,8 @@ public class WebServer
 
     private void advanceToNextTurn()
     {
+        shopAvailable = false;
+        shopOpen = false;
         completedTurns++;
         if (completedTurns % game.getPlayers().length == 0)
         {
@@ -372,6 +479,10 @@ public class WebServer
                 .append(player instanceof Bot);
             json.append(",\"current\":")
                 .append(!game.isGameOver() && i == currentIndex)
+                .append(",\"goldDice\":")
+                .append(countPlayerDice(player, Die.DieColor.GOLD))
+                .append(",\"crackedDice\":")
+                .append(countPlayerDice(player, Die.DieColor.CRACKED))
                 .append('}');
         }
         json.append(']');
@@ -383,6 +494,12 @@ public class WebServer
             .append(turn == null || !turn.canDig() ? 0
                 : Math.round(Bot.caveInRisk(turn, game.getCup()) * 100));
         json.append(",\"cupCount\":").append(game.getCup().size());
+        json.append(",\"shopAvailable\":").append(shopAvailable);
+        json.append(",\"shopOpen\":").append(shopOpen);
+        json.append(",\"goldDiePrice\":")
+            .append(DiceShop.Item.GOLD_DIE.getPrice());
+        json.append(",\"repairPrice\":")
+            .append(DiceShop.Item.REPAIR.getPrice());
         json.append(",\"canDig\":")
             .append(turn != null && turn.canDig());
         json.append(",\"canBank\":")
@@ -406,6 +523,22 @@ public class WebServer
         json.append(winner == null ? "null" : quote(winner.getName()));
         json.append('}');
         return json.toString();
+    }
+
+    private int countPlayerDice(Player player, Die.DieColor color)
+    {
+        int count = player.countOwnDice(color);
+        if (turn != null && game.getCurrentPlayer() == player)
+        {
+            for (Die die : turn.getBorrowedDice())
+            {
+                if (die.getColor() == color)
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     private String responseJson(RollOutcome outcome, List<BotEvent> events)

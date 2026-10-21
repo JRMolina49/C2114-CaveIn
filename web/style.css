@@ -658,6 +658,16 @@ button {
   background: #ff9da1;
 }
 
+.roll-die.color-gold {
+  border: 4px solid #36a4ae;
+  background: #f0cb38;
+}
+
+.roll-die.color-cracked {
+  border: 4px solid #515151;
+  background: #b8b8b8;
+}
+
 .roll-die img {
   width: 42px;
   height: 42px;
@@ -686,14 +696,197 @@ button {
   color: #ff7373;
 }
 
-.game-actions .figma-button:first-child {
+#dig-button {
   left: 287px;
   top: 905px;
 }
 
-.game-actions .figma-button:last-child {
+#bank-button {
   left: 955px;
   top: 905px;
+}
+
+.shop-open-button {
+  left: 1180px;
+  top: 905px;
+  width: 180px;
+  font-size: 38px;
+}
+
+.shop-screen {
+  isolation: isolate;
+}
+
+.shop-stand,
+.shop-mole,
+.shop-tie {
+  position: absolute;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.shop-stand {
+  left: 483px;
+  top: 220px;
+  z-index: 1;
+  width: 476px;
+  height: 776px;
+}
+
+.shop-mole {
+  left: -23px;
+  top: 340px;
+  z-index: 2;
+  width: 538px;
+  height: 538px;
+}
+
+.shop-tie {
+  left: 184px;
+  top: 792px;
+  z-index: 4;
+  width: 246px;
+  height: 246px;
+}
+
+.shop-player-list {
+  left: 40px;
+  top: 81px;
+  z-index: 5;
+}
+
+.shop-sign {
+  position: absolute;
+  left: 576px;
+  top: 224px;
+  z-index: 3;
+  width: 388px;
+  height: 122px;
+  display: grid;
+  place-items: center;
+  border: 5px solid #36a4ae;
+  border-radius: 8px;
+  background: #dad8d3;
+  box-shadow: 0 4px 0 rgba(54, 35, 17, .5);
+  color: #79453e;
+  text-align: center;
+}
+
+.shop-sign h2 {
+  margin: 0;
+  font-size: 35px;
+  line-height: 1.06;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .45);
+}
+
+.shop-item {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  transition: filter 140ms ease, transform 140ms ease, opacity 140ms ease;
+}
+
+.shop-item:focus-visible,
+.purchase-shop-button:focus-visible {
+  outline: 4px solid #fff;
+  outline-offset: 4px;
+}
+
+.shop-item:hover:not(:disabled) {
+  transform: translateY(-3px);
+  filter: brightness(1.2);
+}
+
+.shop-item:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
+
+.gold-shop-item {
+  left: 671px;
+  top: 515px;
+  width: 74px;
+  height: 74px;
+}
+
+.gold-shop-item.selected {
+  outline: 5px solid #fff0a2;
+  outline-offset: 3px;
+}
+
+.repair-shop-item {
+  left: 744px;
+  top: 349px;
+  width: 140px;
+  height: 170px;
+  border: 0;
+  background: transparent;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, .45));
+}
+
+.repair-shop-item.selected {
+  outline: 5px solid #fff0a2;
+  outline-offset: 1px;
+  border-radius: 18px;
+  background: rgba(255, 240, 162, .2);
+}
+
+.repair-shop-item img {
+  width: 124px;
+  height: 150px;
+}
+
+.shop-price-board {
+  position: absolute;
+  left: 708px;
+  top: 646px;
+  z-index: 4;
+  width: 156px;
+  height: 307px;
+  padding: 27px 17px;
+  border: 5px solid #4b2396;
+  border-radius: 11px;
+  background: #c9c8c2;
+  box-shadow: 0 5px 0 rgba(54, 35, 17, .45);
+  color: #3c2a21;
+}
+
+.shop-price-board p {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.55;
+}
+
+.shop-message {
+  position: absolute;
+  left: 965px;
+  top: 734px;
+  z-index: 6;
+  width: 350px;
+  min-height: 38px;
+  margin: 0;
+  color: #fff0b2;
+  font-size: 21px;
+  text-align: center;
+  text-shadow: 0 2px 3px #211912;
+}
+
+.shop-message.error {
+  color: #ff7373;
+}
+
+.purchase-shop-button {
+  left: 1029px;
+  top: 805px;
+  z-index: 6;
+  width: 296px;
+  height: 167px;
+  padding: 8px 18px;
+  font-size: 38px;
+  line-height: 1.15;
 }
 
 .winner-screen {

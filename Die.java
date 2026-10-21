@@ -12,7 +12,7 @@ public class Die
      */
     public enum DieColor 
     {
-        GREEN, YELLOW, RED;
+        GREEN, YELLOW, RED, GOLD, CRACKED;
     }
 
     /*
@@ -34,7 +34,8 @@ public class Die
     {
         if (color == null) // throws an exception if the color is unexpected.
         {
-            throw new IllegalArgumentException("Die color must be GREEN, YELLOW, or RED.");
+            throw new IllegalArgumentException(
+                "Die color must not be null.");
         }
 
         this.color = color;
@@ -59,6 +60,20 @@ public class Die
                 faces = new Face[] 
                 {
                     Face.GEM, Face.GEM, Face.GEM, 
+                    Face.ROCKFALL, Face.ROCKFALL, Face.ROCKFALL
+                };
+                break;        
+            case GOLD: // bought in the DiceShop: every face is a gem
+                faces = new Face[] 
+                {
+                    Face.GEM, Face.GEM, Face.GEM, 
+                    Face.GEM, Face.GEM, Face.GEM
+                };
+                break;
+            case CRACKED: // added after a cave-in: mostly rockfalls
+                faces = new Face[] 
+                {
+                    Face.GEM, Face.FOOTPRINT, Face.ROCKFALL, 
                     Face.ROCKFALL, Face.ROCKFALL, Face.ROCKFALL
                 };
                 break;

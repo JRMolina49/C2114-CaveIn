@@ -69,7 +69,39 @@
         <div class="game-actions">
           <button id="dig-button" class="figma-button">Dig</button>
           <button id="bank-button" class="figma-button">Bank</button>
+          <button id="shop-button" class="figma-button shop-open-button"
+            hidden>Shop</button>
         </div>
+      </section>
+
+      <section id="shop-screen" class="screen shop-screen" hidden>
+        <aside id="shop-player-list" class="scoreboard shop-player-list"
+          aria-label="Player scores"></aside>
+        <img class="shop-mole" src="assets/shop-mole.png" alt="">
+        <img class="shop-tie" src="assets/shop-tie.svg" alt="">
+        <img class="shop-stand" src="assets/shop-stand.png" alt="">
+        <div class="shop-sign" aria-label="Mikey P's Mole Sale">
+          <h2>Mikey P's<br>Mole Sale</h2>
+        </div>
+        <button id="gold-shop-item"
+          class="shop-item roll-die color-gold face-gem gold-shop-item"
+          type="button" aria-pressed="false"
+          aria-label="Select Gold Die, costs 4 gems">
+          <img src="assets/gem-gold.svg" alt="">
+        </button>
+        <button id="repair-shop-item" class="shop-item repair-shop-item"
+          type="button" aria-pressed="false"
+          aria-label="Select Repair, costs 2 gems">
+          <img src="assets/shop-repair.svg" alt="">
+        </button>
+        <div class="shop-price-board">
+          <p>Gold Die:<br><span id="gold-die-price">4</span> gems<br><br>
+            Repair:<br><span id="repair-price">2</span> gems</p>
+        </div>
+        <p id="shop-message" class="shop-message" role="status"></p>
+        <button id="purchase-shop-button" class="figma-button purchase-shop-button">
+          Purchase for <span id="shop-total">0</span> gems?
+        </button>
       </section>
 
       <section id="winner-screen" class="screen winner-screen" hidden>

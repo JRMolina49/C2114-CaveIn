@@ -9,6 +9,8 @@ import java.util.Random;
  *   GREEN : 0-4 GEM, 5 FOOTPRINT
  *   YELLOW: 0-2 GEM, 3-4 FOOTPRINT, 5 ROCKFALL
  *   RED   : 0-2 GEM, 3-5 ROCKFALL
+ *   GOLD  : 0-5 GEM
+ *   CRACKED: 0 GEM, 1 FOOTPRINT, 2-5 ROCKFALL
  *
  * @author Sathvik Verma
  * @version October 14, 2026
