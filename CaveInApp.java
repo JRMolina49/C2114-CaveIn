@@ -41,6 +41,7 @@ public class CaveInApp
     private PrintStream out;
     private Random rng;
     private Game game;
+    private DiceShop shop = new DiceShop();
 
     /**
      * Creates an app that reads from the given Scanner and prints to the
@@ -158,6 +159,7 @@ public class CaveInApp
         Player player = game.getCurrentPlayer();
         Turn turn = new Turn(player, game.getCup(), rng);
         out.println("\n--- " + player.getName() + "'s turn ---");
+        boolean shopUsed = false;
 
         while (!turn.isOver())
         {
@@ -174,7 +176,13 @@ public class CaveInApp
                 {
                     printRisk(turn);
                 }
-                command = readCommand(turn);
+                command = readCommand(turn, !shopUsed);
+            }
+            if (command.equals("shop"))
+            {
+                openShop(player);
+                shopUsed = true;
+                continue;
             }
             if (command.equals("dig"))
             {
@@ -185,9 +193,11 @@ public class CaveInApp
                 {
                     out.println("CAVE-IN! " + player.getName()
                         + " loses this turn's gems.");
+                    out.println("A cracked die joins " + player.getName()
+                        + "'s dice for good.");
                 }
             }
-            else
+            else if (command.equals("bank"))
             {
                 int points = turn.bank();
                 out.println(player.getName() + " banks " + points
@@ -287,10 +297,26 @@ public class CaveInApp
      */
     public String readCommand(Turn turn)
     {
+        return readCommand(turn, turn.getState() == Turn.TurnState.READY);
+    }
+
+    private String readCommand(Turn turn, boolean shopAvailable)
+    {
         while (true)
         {
-            String command = prompt("dig or bank? ").toLowerCase();
-            if (command.equals("dig"))
+            boolean shopOpen = shopAvailable
+                && turn.getState() == Turn.TurnState.READY;
+            String command = prompt(shopOpen ? "dig, bank or shop? "
+                : "dig or bank? ").toLowerCase();
+            if (command.equals("shop"))
+            {
+                if (shopOpen)
+                {
+                    return command;
+                }
+                out.println("The shop is only open before your first roll.");
+            }
+            else if (command.equals("dig"))
             {
                 if (turn.canDig())
                 {
@@ -308,7 +334,8 @@ public class CaveInApp
             }
             else
             {
-                out.println("Type dig or bank.");
+                out.println(shopOpen ? "Type dig, bank or shop."
+                    : "Type dig or bank.");
             }
         }
     }
@@ -347,6 +374,93 @@ public class CaveInApp
                 .append(p.getScore());
         }
         out.println(sb.toString());
+        Player player = turn.getPlayer();
+        int gold = player.countOwnDice(Die.DieColor.GOLD)
+            + countColor(turn, Die.DieColor.GOLD);
+        int cracked = player.countOwnDice(Die.DieColor.CRACKED)
+            + countColor(turn, Die.DieColor.CRACKED);
+        if (gold + cracked > 0)
+        {
+            out.println(player.getName() + "'s own dice: " + gold
+                + " gold, " + cracked + " cracked");
+        }
+    }
+
+        /**
+     * Opens the dice shop for one player, asking again on bad input,
+     * until they type "done".
+     *
+     * @param player the player shopping
+     */
+    public void openShop(Player player)
+    {
+        DiceShop.Item[] items = shop.getItems();
+        boolean[] purchased = new boolean[items.length];
+        out.println("--- Dice shop --- " + player.getName() + " has "
+            + player.getScore() + " point(s) and "
+            + player.countOwnDice(Die.DieColor.CRACKED) + " cracked dice.");
+        for (int i = 0; i < items.length; i++)
+        {
+            out.println((i + 1) + ") " + items[i].getDescription() + " ("
+                + items[i].getPrice() + " points)");
+        }
+        while (true)
+        {
+            String line = prompt("Buy 1-" + items.length + ", or done? ")
+                .toLowerCase();
+            if (line.equals("done"))
+            {
+                return;
+            }
+            int choice = -1;
+            try
+            {
+                choice = Integer.parseInt(line) - 1;
+            }
+            catch (NumberFormatException e)
+            {
+                // not a number; handled below
+            }
+            if (choice < 0 || choice >= items.length)
+            {
+                out.println("Type a number from 1 to " + items.length
+                    + ", or done.");
+            }
+            else if (purchased[choice])
+            {
+                out.println("You can only buy one of each item per visit.");
+            }
+            else if (shop.buy(player, items[choice]))
+            {
+                purchased[choice] = true;
+                out.println("Bought. " + player.getName() + " has "
+                    + player.getScore() + " point(s) left.");
+            }
+            else if (player.getScore() < items[choice].getPrice())
+            {
+                out.println("Not enough points for that.");
+            }
+            else
+            {
+                out.println("You have no cracked dice to repair.");
+            }
+        }
+    }
+
+    /**
+     * Counts dice of one color the turn has borrowed from its player.
+     */
+    private int countColor(Turn turn, Die.DieColor color)
+    {
+        int count = 0;
+        for (Die die : turn.getBorrowedDice())
+        {
+            if (die.getColor() == color)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**

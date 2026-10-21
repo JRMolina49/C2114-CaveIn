@@ -1,0 +1,35 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="208" height="177" viewBox="0 0 208 177" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Red Die">
+<path id="Rectangle 12" d="M76 43.75H131C136.109 43.75 140.25 47.8914 140.25 53V108C140.25 113.109 136.109 117.25 131 117.25H76C70.8914 117.25 66.75 113.109 66.75 108V53C66.75 47.8914 70.8914 43.75 76 43.75Z" fill="#F79FA5" stroke-width="1.5" stroke="#CA3B3D"/>
+<g id="Polygon 4">
+<path d="M100 86L105.878 87.9098L109.511 92.9098V99.0902L105.878 104.09L100 106L94.1221 104.09L90.4894 99.0902V92.9098L94.1221 87.9098L100 86Z" fill="#CA3B3D"/>
+<mask id="stroke0_0_18" fill="white">
+<path d="M100 86L105.878 87.9098L109.511 92.9098V99.0902L105.878 104.09L100 106L94.1221 104.09L90.4894 99.0902V92.9098L94.1221 87.9098L100 86Z"/>
+</mask>
+<path d="M100 86L105.878 87.9098L109.511 92.9098V99.0902L105.878 104.09L100 106L94.1221 104.09L90.4894 99.0902V92.9098L94.1221 87.9098L100 86Z" stroke-width="2" stroke="#7B2122" mask="url(#stroke0_0_18)"/>
+</g>
+<g id="Polygon 5">
+<path d="M117 72L122.878 73.9098L126.511 78.9098V85.0902L122.878 90.0902L117 92L111.122 90.0902L107.489 85.0902V78.9098L111.122 73.9098L117 72Z" fill="#CA3B3D"/>
+<mask id="stroke1_0_18" fill="white">
+<path d="M117 72L122.878 73.9098L126.511 78.9098V85.0902L122.878 90.0902L117 92L111.122 90.0902L107.489 85.0902V78.9098L111.122 73.9098L117 72Z"/>
+</mask>
+<path d="M117 72L122.878 73.9098L126.511 78.9098V85.0902L122.878 90.0902L117 92L111.122 90.0902L107.489 85.0902V78.9098L111.122 73.9098L117 72Z" stroke-width="2" stroke="#7B2122" mask="url(#stroke1_0_18)"/>
+</g>
+<g id="Polygon 6">
+<path d="M94 60L99.8779 61.9098L103.511 66.9098V73.0902L99.8779 78.0902L94 80L88.1221 78.0902L84.4894 73.0902V66.9098L88.1221 61.9098L94 60Z" fill="#CA3B3D"/>
+<mask id="stroke2_0_18" fill="white">
+<path d="M94 60L99.8779 61.9098L103.511 66.9098V73.0902L99.8779 78.0902L94 80L88.1221 78.0902L84.4894 73.0902V66.9098L88.1221 61.9098L94 60Z"/>
+</mask>
+<path d="M94 60L99.8779 61.9098L103.511 66.9098V73.0902L99.8779 78.0902L94 80L88.1221 78.0902L84.4894 73.0902V66.9098L88.1221 61.9098L94 60Z" stroke-width="2" stroke="#7B2122" mask="url(#stroke2_0_18)"/>
+</g>
+<path id="Line 17" d="M94.75 87.75V82.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 18" d="M98.75 86.75V81.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 20" d="M112.75 73.75V68.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 21" d="M117.75 72.75V64.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 23" d="M99.75 61.75V53.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 24" d="M94.75 60.75V49.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 25" d="M88.75 61.75V56.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 22" d="M122.75 74.75V70.25" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+<path id="Line 19" d="M102.75 87V78.5" stroke-width="0.5" stroke-linecap="round" stroke="#7B2122"/>
+</g>
+</svg>

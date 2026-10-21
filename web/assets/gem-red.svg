@@ -1,0 +1,30 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Jewel">
+<g id="Gem">
+<g id="Polygon 3">
+<use xlink:href="#stroke0_0_32" fill="#E375FF"/>
+<mask id="stroke1_0_32" fill="white">
+<use xlink:href="#stroke0_0_32"/>
+</mask>
+<path d="M16.7722 4.25H3.22785C2.42523 4.25 1.94965 5.14794 2.40063 5.81188L9.17278 15.7821C9.56956 16.3663 10.4304 16.3663 10.8272 15.7821L17.5994 5.81188C18.0503 5.14793 17.5748 4.25 16.7722 4.25Z" stroke-width="2" stroke="#B945D6" mask="url(#stroke1_0_32)"/>
+</g>
+<g id="Rectangle 13">
+<use xlink:href="#stroke2_0_32" fill="#E375FF"/>
+<mask id="stroke3_0_32" fill="white">
+<use xlink:href="#stroke2_0_32"/>
+</mask>
+<path d="M3.11803 6H16.882C17.6253 6 18.1088 5.21769 17.7764 4.55279L15.7764 0.552786C15.607 0.214002 15.2607 0 14.882 0H5.11803C4.73926 0 4.393 0.214002 4.22361 0.552786L2.22361 4.55279C1.89116 5.21769 2.37465 6 3.11803 6Z" stroke-width="2" stroke="#B945D6" mask="url(#stroke3_0_32)"/>
+</g>
+</g>
+<path id="Line 11" d="M7.5 5L10.1393 15.675" stroke-width="0.5" stroke-linecap="round" stroke="#B945D6"/>
+<path id="Line 13" d="M5.32496 1.13925L7.5 5.5" stroke-width="0.5" stroke-linecap="round" stroke="#B945D6"/>
+<path id="Line 14" d="M10 0.5L7.5 5.5" stroke-width="0.5" stroke-linecap="round" stroke="#B945D6"/>
+<path id="Line 15" d="M10 0.5L12.5 5.5" stroke-width="0.5" stroke-linecap="round" stroke="#B945D6"/>
+<path id="Line 16" d="M14.675 1.13925L12.5 5.5" stroke-width="0.5" stroke-linecap="round" stroke="#B945D6"/>
+<path id="Line 12" d="M12.5 5.5L9.86073 15.675" stroke-width="0.5" stroke-linecap="round" stroke="#B945D6"/>
+</g>
+<defs>
+<path id="stroke0_0_32" d="M10.8272 15.7821C10.4304 16.3663 9.56956 16.3663 9.17278 15.7821L2.40063 5.81188C1.94966 5.14794 2.42523 4.25 3.22785 4.25H16.7722C17.5748 4.25 18.0503 5.14793 17.5994 5.81188L10.8272 15.7821Z"/>
+<path id="stroke2_0_32" d="M4.22361 0.552786C4.393 0.214002 4.73926 0 5.11803 0H14.882C15.2607 0 15.607 0.214002 15.7764 0.552786L17.7764 4.55279C18.1088 5.21769 17.6253 6 16.882 6H3.11803C2.37465 6 1.89116 5.21769 2.22361 4.55279L4.22361 0.552786Z"/>
+</defs>
+</svg>
