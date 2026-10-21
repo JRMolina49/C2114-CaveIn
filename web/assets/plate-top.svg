@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="283.5" height="70" viewBox="0 0 283.5 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Ellipse 8">
+<path d="M279.5 35C279.5 52.1208 224.424 66 146 66C67.5756 66 4 52.1208 4 35C4 17.8792 67.5756 4 146 4C224.424 4 279.5 17.8792 279.5 35Z" fill="#5A5F59"/>
+<mask id="stroke0_0_161" maskUnits="userSpaceOnUse" x="0" y="0" width="284" height="70" fill="black">
+<rect fill="white" width="284" height="70"/>
+<path d="M279.5 35C279.5 52.1208 224.424 66 146 66C67.5756 66 4 52.1208 4 35C4 17.8792 67.5756 4 146 4C224.424 4 279.5 17.8792 279.5 35Z"/>
+</mask>
+<path d="M279.5 35C279.5 52.1208 224.424 66 146 66C67.5756 66 4 52.1208 4 35C4 17.8792 67.5756 4 146 4C224.424 4 279.5 17.8792 279.5 35Z" stroke-width="8" stroke="#464B45" mask="url(#stroke0_0_161)"/>
+</g>
+</svg>

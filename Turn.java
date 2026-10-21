@@ -21,6 +21,37 @@ import java.util.Random;
 public class Turn
 {
     /**
+     * The color and face produced by one die in the most recent roll.
+     */
+    public static final class RollResult
+    {
+        private final Die.DieColor color;
+        private final Die.Face face;
+
+        private RollResult(Die.DieColor color, Die.Face face)
+        {
+            this.color = color;
+            this.face = face;
+        }
+
+        /**
+         * @return the color of the die
+         */
+        public Die.DieColor getColor()
+        {
+            return color;
+        }
+
+        /**
+         * @return the face rolled
+         */
+        public Die.Face getFace()
+        {
+            return face;
+        }
+    }
+
+    /**
      * The stages a turn moves through.
      * READY -> ROLLED -> (ROLLED ...) -> CAVED_IN or BANKED
      */
@@ -42,6 +73,7 @@ public class Turn
     private LinkedChain<Die.Face> tally;
     private TurnState state;
     private Random rng;
+    private RollResult[] latestRoll;
 
     /**
      * Starts a new turn in the READY state with an empty hand, set-aside
@@ -66,6 +98,7 @@ public class Turn
         this.setAside = new LinkedChain<Die>();
         this.tally = new LinkedChain<Die.Face>();
         this.state = TurnState.READY;
+        this.latestRoll = new RollResult[0];
     }
 
     /**
@@ -96,12 +129,14 @@ public class Turn
         // Roll every die in the hand. Footprints go back into the hand.
         int rolled = hand.size();
         Die.Face[] faces = new Die.Face[rolled];
+        RollResult[] results = new RollResult[rolled];
         LinkedChain<Die> footprints = new LinkedChain<Die>();
         for (int i = 0; i < rolled; i++)
         {
             Die die = hand.remove();
             Die.Face face = die.roll(rng);
             faces[i] = face;
+            results[i] = new RollResult(die.getColor(), face);
             if (face == Die.Face.FOOTPRINT)
             {
                 footprints.add(die);
@@ -116,6 +151,7 @@ public class Turn
         {
             hand.add(footprints.remove());
         }
+        latestRoll = results;
 
         if (getRockfallCount() >= ROCKFALLS_TO_CAVE_IN)
         {
@@ -126,6 +162,18 @@ public class Turn
             state = TurnState.ROLLED;
         }
         return faces;
+    }
+
+    /**
+     * Copies the color/face pairs from the most recent roll without
+     * exposing the turn's internal snapshot.
+     *
+     * @return the most recent roll results, or an empty array before any
+     *         roll
+     */
+    public RollResult[] getLatestRoll()
+    {
+        return latestRoll.clone();
     }
 
     /**

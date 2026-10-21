@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cave-In</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="viewport" aria-live="polite">
+    <section id="scene" class="scene" aria-label="Cave-In game">
+      <div class="cave-layer cave-base"></div>
+      <div class="cave-layer cave-right"></div>
+      <div class="cave-layer cave-left"></div>
+      <div class="cave-layer cave-rock-left"></div>
+      <div class="cave-layer cave-rock-left-low"></div>
+      <div class="cave-layer cave-rock-right"></div>
+      <div class="cave-layer cave-rock-right-low"></div>
+      <div class="spotlight"></div>
+      <div class="orb-glow" aria-hidden="true"></div>
+      <img class="lamp" src="assets/lamp.svg" alt="">
+
+      <section id="title-screen" class="screen title-screen">
+        <p class="tagline">A Game Of Risk And Rubble</p>
+        <h1>CAVE-IN</h1>
+        <div id="seat-selector" class="seat-selector" aria-label="Player selection"></div>
+        <div class="name-entry">
+          <label class="visually-hidden" for="player-name">Player name</label>
+          <input id="player-name" maxlength="10" autocomplete="off"
+            placeholder="Enter player 1's name">
+        </div>
+        <p id="setup-message" class="setup-message" role="status"></p>
+        <button id="start-button" class="figma-button start-button">Start</button>
+      </section>
+
+      <section id="howto-screen" class="screen howto-screen" hidden>
+        <img class="howto-art" src="assets/how-to-play.png"
+          alt="How To Play screen from the Cave-In Figma design">
+        <button id="next-button" class="next-button"
+          aria-label="Next: continue to the game"></button>
+      </section>
+
+      <section id="round-screen" class="screen round-screen" hidden>
+        <p class="round-label">ROUND <span id="round-number">1</span></p>
+        <h2 id="turn-announcement">PLAYER'S TURN</h2>
+        <p id="bot-announcement" class="bot-announcement"></p>
+      </section>
+
+      <section id="game-screen" class="screen game-screen" hidden>
+        <aside id="scoreboard" class="scoreboard" aria-label="Player scores"></aside>
+        <div class="game-heading">
+          <span>ROUND <b id="game-round">1</b></span>
+          <span id="game-player"></span>
+        </div>
+        <div class="risk-panel">
+          <span>GEMS IN HAND</span>
+          <strong id="gems-count">0</strong>
+          <span>ROCKFALL RISK</span>
+          <strong id="risk-count">0%</strong>
+          <div class="risk-track"><div id="risk-fill"></div></div>
+          <span>ROCKFALLS</span>
+          <div id="rockfall-count" class="rockfall-count"></div>
+        </div>
+        <img class="plate-body" src="assets/plate-body.svg" alt="">
+        <img class="plate-top" src="assets/plate-top.svg" alt="">
+        <div id="roll-results" class="roll-results" aria-label="Latest dice roll"></div>
+        <img id="cup" class="cup" src="assets/cup.svg" alt="Cup covering the dice">
+        <p id="turn-message" class="turn-message" role="status"></p>
+        <div class="game-actions">
+          <button id="dig-button" class="figma-button">Dig</button>
+          <button id="bank-button" class="figma-button">Bank</button>
+        </div>
+      </section>
+
+      <section id="winner-screen" class="screen winner-screen" hidden>
+        <h2 id="winner-intro">THE CAVE HAS SPOKEN...</h2>
+        <p id="winner-name" hidden></p>
+      </section>
+
+      <div id="transition-cover" class="transition-cover" aria-hidden="true">
+        <img id="transition-art" alt="">
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

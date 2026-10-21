@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="85" height="85" viewBox="0 0 85 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Player Icon">
+<path id="Ellipse 9" d="M82.5 42.5C82.5 64.5914 64.5914 82.5 42.5 82.5C20.4086 82.5 2.5 64.5914 2.5 42.5C2.5 20.4086 20.4086 2.5 42.5 2.5C64.5914 2.5 82.5 20.4086 82.5 42.5Z" fill="#31539B" stroke-width="5" stroke="#60217B"/>
+<circle id="Ellipse 10" cx="43" cy="30" r="11" fill="#28217B"/>
+<path id="Rectangle 15" d="M28 47.5C28 45.2909 29.7909 43.5 32 43.5H53C55.2091 43.5 57 45.2909 57 47.5V74.6931C57 76.3777 55.9448 77.8946 54.3421 78.4134C45.4731 81.2842 39.5325 81.2544 30.6707 78.4089C29.0618 77.8923 28 76.3722 28 74.6824V47.5Z" fill="#28217B"/>
+</g>
+</svg>
